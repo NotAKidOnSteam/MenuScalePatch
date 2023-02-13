@@ -173,16 +173,16 @@ internal class HarmonyPatches
 
     //add independent head movement to important input
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(InputModuleMouseKeyboard), "UpdateImportantInput")]
-    private static void Postfix_InputModuleMouseKeyboard_UpdateImportantInput(ref CVRInputManager ____inputManager)
+    [HarmonyPatch(typeof(InputModuleMouseKeyboardNew), "UpdateImportantInput")]
+    private static void Postfix_InputModuleMouseKeyboardNew_UpdateImportantInput(ref CVRInputManager ____inputManager)
     {
         ____inputManager.independentHeadTurn |= Input.GetKey(KeyCode.LeftAlt);
     }
 
     //Support for changing VRMode during runtime.
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerSetup), "CalibrateAvatar")]
-    private static void Postfix_PlayerSetup_CalibrateAvatar()
+    [HarmonyPatch(typeof(PlayerSetup), "SetupAvatar")]
+    private static void Postfix_PlayerSetup_SetupAvatar()
     {
         try
         {
