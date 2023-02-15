@@ -91,7 +91,6 @@ internal class HarmonyPatches
         {
             QuickMenuHelper helper = __instance.quickMenu.gameObject.AddComponent<QuickMenuHelper>();
             helper.handAnchor = ____leftVrAnchor.transform;
-            helper.enabled = false;
         }
         catch (System.Exception e)
         {
@@ -106,8 +105,7 @@ internal class HarmonyPatches
     {
         try
         {
-            MainMenuHelper helper = __instance.gameObject.AddComponent<MainMenuHelper>();
-            helper.enabled = false;
+            __instance.gameObject.AddComponent<MainMenuHelper>();
         }
         catch (System.Exception e)
         {
@@ -126,12 +124,12 @@ internal class HarmonyPatches
             ____quickMenuOpen = show;
             __instance.quickMenu.enabled = true;
             __instance.quickMenuAnimator.SetBool("Open", show);
-            QuickMenuHelper.Instance.enabled = show;
+            QuickMenuHelper.Instance.MenuIsOpen = show;
             QuickMenuHelper.Instance.UpdateWorldAnchors(show);
             //shouldnt run if switching menus on desktop
             if (!MetaPort.Instance.isUsingVr)
             {
-                if (!show && MainMenuHelper.Instance.enabled)
+                if (!show && MainMenuHelper.Instance.MenuIsOpen)
                 {
                     return false;
                 }
@@ -146,7 +144,7 @@ internal class HarmonyPatches
     //hook menu open/close
     [HarmonyPrefix]
     [HarmonyPatch(typeof(ViewManager), "UiStateToggle", new Type[] { typeof(bool) })]
-    private static bool Postfix_ViewManager_UiStateToggle(bool show, ref ViewManager __instance, ref bool ____gameMenuOpen)
+    private static bool Prefix_ViewManager_UiStateToggle(bool show, ref ViewManager __instance, ref bool ____gameMenuOpen)
     {
         if (MainMenuHelper.Instance == null) return true;
         if (show != ____gameMenuOpen)
@@ -154,12 +152,12 @@ internal class HarmonyPatches
             ____gameMenuOpen = show;
             __instance.gameMenuView.enabled = true;
             __instance.uiMenuAnimator.SetBool("Open", show);
-            MainMenuHelper.Instance.enabled = show;
+            MainMenuHelper.Instance.MenuIsOpen = show;
             MainMenuHelper.Instance.UpdateWorldAnchors(show);
             //shouldnt run if switching menus on desktop
             if (!MetaPort.Instance.isUsingVr)
             {
-                if (!show && QuickMenuHelper.Instance.enabled)
+                if (!show && QuickMenuHelper.Instance.MenuIsOpen)
                 {
                     return false;
                 }
